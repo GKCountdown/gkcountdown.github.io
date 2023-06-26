@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>距离高考还有多少时间</title>
+    <style>
+        #countdown {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="countdown"></h1>
+    <script>
+        function updateCountdown() {
+            const gaokaoDate = new Date(2026, 5, 7, 9, 0, 0); // 高考时间：2026年6月7日9时（北京时间，UTC+8）
+            const currentDate = new Date(); // 获取当前时间
+            const timeZoneOffset = 8 * 60 * 60 * 1000; // 北京时间偏移量（以毫秒为单位）
+            const adjustedCurrentDate = new Date(currentDate.getTime() + timeZoneOffset); // 将当前时间转换为北京时间
+            const timeDifference = gaokaoDate - adjustedCurrentDate; // 计算高考与当前时间的差值
+
+            const daysRemaining = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const hoursRemaining = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutesRemaining = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            const secondsRemaining = Math.floor((timeDifference % (1000 * 60)) / 1000);
+            const millisecondsRemaining = Math.floor(timeDifference % 1000);
+
+            document.getElementById("countdown").innerHTML = "距离高考还有 " + daysRemaining + " 天 " + hoursRemaining + " 小时 " + minutesRemaining + " 分钟 " + secondsRemaining + " 秒 " + millisecondsRemaining + " 毫秒";
+        }
+
+        updateCountdown(); // 首次加载时调用函数
+        setInterval(updateCountdown, 1); // 每毫秒更新一次
+    </script>
+</body>
+</html>
