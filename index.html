@@ -17,8 +17,7 @@
         function updateCountdown() {
             const gaokaoDate = new Date(2026, 5, 7, 9, 0, 0); // 高考时间：2026年6月7日9时（北京时间，UTC+8）
             const currentDate = new Date(); // 获取当前时间
-            const timeZoneOffset = 8 * 60 * 60 * 1000; // 北京时间偏移量（以毫秒为单位）
-            const adjustedCurrentDate = new Date(currentDate.getTime() + timeZoneOffset); // 将当前时间转换为北京时间
+            const adjustedCurrentDate = new Date(currentDate.getTime());
             const timeDifference = gaokaoDate - adjustedCurrentDate; // 计算高考与当前时间的差值
 
             const daysRemaining = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
