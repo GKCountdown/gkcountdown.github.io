@@ -1,36 +1,1229 @@
-
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>距离高考还有多少时间</title>
-    <style>
-        #countdown {
-            color: red;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高考倒计时</title>
+  <!-- 引入MDUI CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/css/mdui.min.css">
+  <!-- 引入Google字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- 引入动画库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    :root {
+      --primary-color: #5e72e4;
+      --primary-light: #8f9bff;
+      --primary-dark: #324cdd;
+      --accent-color: #f5365c;
+      --accent-light: #ff6d85;
+      --accent-dark: #d40b33;
+      --success-color: #2dce89;
+      --info-color: #11cdef;
+      --warning-color: #fb6340;
+      --background-color: #f8f9fe;
+      --card-background: #ffffff;
+      --text-primary: #32325d;
+      --text-secondary: #8898aa;
+      --text-muted: #adb5bd;
+      --border-color: #e9ecef;
+      --spacing-unit: 8px;
+      --border-radius: 10px;
+      --shadow-sm: 0 2px 5px rgba(50, 50, 93, 0.1), 0 1px 2px rgba(0, 0, 0, 0.07);
+      --shadow-md: 0 4px 10px rgba(50, 50, 93, 0.1), 0 2px 4px rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+      --shadow-xl: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+      --transition-time: 0.25s;
+    }
+    
+    /* 强制针对切换主题覆盖变量 */
+    body.dark-theme {
+      --background-color: #1e1e2f;
+      --card-background: #27293d;
+      --text-primary: #ffffff;
+      --text-secondary: #ced4da;
+      --text-muted: #8898aa;
+      --border-color: #2b3553;
+    }
+    body.light-theme {
+      --background-color: #f8f9fe;
+      --card-background: #ffffff;
+      --text-primary: #32325d;
+      --text-secondary: #8898aa;
+      --text-muted: #adb5bd;
+      --border-color: #e9ecef;
+    }
+    
+    /* （保留已有的媒体查询，仅供参考，可以根据需求注释掉） */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* 此处留空，由 body.dark-theme 控制 */
+      }
+    }
+    
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background-color var(--transition-time);
+    }
+    
+    /* 半透明渐变背景 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(94, 114, 228, 0.07) 0%, rgba(130, 94, 228, 0.07) 100%);
+      z-index: -1;
+    }
+    
+    .app-container {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: calc(var(--spacing-unit) * 10) var(--spacing-unit) var(--spacing-unit);
+    }
+    
+    .page-container {
+      padding: calc(var(--spacing-unit) * 2);
+    }
+    
+    .app-header {
+      background-color: var(--card-background);
+      color: var(--text-primary);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      padding: 0 calc(var(--spacing-unit) * 3);
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    
+    .app-title {
+      flex-grow: 1;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .app-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+    
+    .card {
+      background-color: var(--card-background);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      margin-bottom: calc(var(--spacing-unit) * 4);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      border: 1px solid var(--border-color);
+    }
+    
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .card-header {
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 2);
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+    
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card-title-icon {
+      color: var(--primary-color);
+    }
+    
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: calc(var(--spacing-unit)) 0 0;
+    }
+    
+    .card-content {
+      padding: calc(var(--spacing-unit) * 3);
+    }
+    
+    .countdown-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .countdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: calc(var(--spacing-unit) * 3);
+    }
+    
+    .countdown-year-selector {
+      min-width: 120px;
+    }
+    
+    .countdown-display {
+      text-align: center;
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      font-size: 16px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    .countdown-units {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 550px;
+      margin: 0 auto;
+      gap: calc(var(--spacing-unit) * 2);
+    }
+    
+    .countdown-unit {
+      background: linear-gradient(135deg, var(--card-background), rgba(255, 255, 255, 0.05));
+      border-radius: var(--border-radius);
+      text-align: center;
+      padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 2);
+      flex: 1;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .countdown-unit:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .countdown-value {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.2;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-fill-color: transparent;
+    }
+    
+    .countdown-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .timezone-info {
+      text-align: center;
+      margin-top: calc(var(--spacing-unit) * 3);
+      font-size: 14px;
+      color: var(--text-secondary);
+      padding: calc(var(--spacing-unit));
+      background-color: rgba(0, 0, 0, 0.02);
+      border-radius: calc(var(--border-radius) / 2);
+    }
+    
+    .inspiration-card .card-content {
+      padding-bottom: calc(var(--spacing-unit) * 3);
+    }
+    
+    .inspiration-text {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      color: var(--text-primary);
+    }
+    
+    /* 进度条样式 */
+    .study-progress-container {
+      position: relative;
+      padding-top: 25px;
+      padding-bottom: 60px;
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+    
+    .progress-bar-container {
+      height: 10px;
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      width: 0%;
+      transition: width 0.8s ease;
+      border-radius: 20px;
+    }
+    
+    .progress-markers {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 15px;
+      height: 0;
+    }
+    
+    .progress-marker {
+      position: absolute;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 10px;
+      background-color: var(--text-secondary);
+      top: 10px;
+    }
+    
+    .progress-marker::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      top: -4px;
+      left: -3.5px;
+    }
+    
+    .progress-marker.active::before {
+      background-color: var(--accent-color);
+      width: 10px;
+      height: 10px;
+      top: -5px;
+      left: -4.5px;
+    }
+    
+    .progress-marker-label {
+      position: absolute;
+      bottom: -25px;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    
+    .progress-marker-label.semester {
+      font-size: 10px;
+      color: var(--text-muted);
+      bottom: -45px;
+    }
+    
+    .progress-marker.current .progress-marker-label {
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+    
+    .progress-overview {
+      display: flex;
+      justify-content: space-between;
+      margin-top: calc(var(--spacing-unit) * 2);
+    }
+    
+    .progress-stat {
+      text-align: center;
+      flex: 1;
+    }
+    
+    .progress-stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .progress-stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    .current-phase {
+      text-align: center;
+      margin: calc(var(--spacing-unit) * 3) 0;
+      padding: calc(var(--spacing-unit) * 2);
+      background: linear-gradient(135deg, rgba(94, 114, 228, 0.1), rgba(130, 94, 228, 0.1));
+      border-radius: var(--border-radius);
+      position: relative;
+    }
+    
+    .current-phase-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    
+    .current-phase-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .mdui-dialog {
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      background-color: var(--card-background);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    .mdui-dialog-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .mdui-dialog-content {
+      padding: calc(var(--spacing-unit) * 3);
+      color: var(--text-primary);
+    }
+    
+    .mdui-dialog-actions {
+      padding: calc(var(--spacing-unit) * 2);
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .mdui-btn-raised {
+      border-radius: calc(var(--border-radius) / 2);
+      text-transform: none;
+      font-weight: 500;
+      padding: 6px 16px;
+      font-size: 14px;
+    }
+    
+    .floating-button {
+      position: fixed;
+      bottom: calc(var(--spacing-unit) * 3);
+      right: calc(var(--spacing-unit) * 3);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 900;
+    }
+    
+    .floating-button:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    .select-container {
+      margin-top: calc(var(--spacing-unit) * 2);
+    }
+    
+    .theme-switcher {
+      display: flex;
+      align-items: center;
+      margin-right: calc(var(--spacing-unit) * 2);
+      cursor: pointer;
+    }
+    
+    .quote-card {
+      background: linear-gradient(135deg, rgba(94, 114, 228, 0.1), rgba(130, 94, 228, 0.1));
+      color: var(--text-primary);
+      padding: calc(var(--spacing-unit) * 3);
+      border-radius: var(--border-radius);
+      margin-top: calc(var(--spacing-unit) * 3);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      border: 1px solid var(--border-color);
+    }
+    
+    .quote-text {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.6;
+      font-style: italic;
+      position: relative;
+      padding-left: calc(var(--spacing-unit) * 3);
+    }
+    
+    .quote-text::before {
+      content: '"';
+      position: absolute;
+      left: 0;
+      top: -10px;
+      font-size: 40px;
+      color: var(--primary-color);
+      opacity: 0.5;
+      font-family: Georgia, serif;
+    }
+    
+    /* 美化滑块组件 */
+    .mdui-slider-thumb {
+      background-color: var(--primary-color);
+    }
+    
+    .mdui-slider-track {
+      background-color: var(--primary-light);
+    }
+    
+    /* 美化选择框 */
+    .mdui-select {
+      border-radius: calc(var(--border-radius) / 2);
+      background-color: var(--card-background);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 14px;
+    }
+    
+    /* 动画效果 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    .fade-in-delay-1 {
+      animation-delay: 0.1s;
+    }
+    
+    .fade-in-delay-2 {
+      animation-delay: 0.2s;
+    }
+    
+    .fade-in-delay-3 {
+      animation-delay: 0.3s;
+    }
+    
+    /* 美化按钮，修复部分按钮文字垂直居中问题 */
+    .mdui-btn,
+    .mdui-btn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    
+    /* 精美气泡背景 */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(94, 114, 228, 0.1), rgba(130, 94, 228, 0.1));
+      backdrop-filter: blur(1px);
+      -webkit-backdrop-filter: blur(1px);
+      z-index: -1;
+      opacity: 0.7;
+    }
+    
+    .bubble-1 {
+      width: 120px;
+      height: 120px;
+      top: -30px;
+      left: -30px;
+    }
+    
+    .bubble-2 {
+      width: 80px;
+      height: 80px;
+      bottom: 20px;
+      right: 30px;
+    }
+    
+    /* 装饰性元素 */
+    .decorative-line {
+      position: absolute;
+      height: 3px;
+      width: 60px;
+      background: linear-gradient(90deg, var(--primary-color), transparent);
+      top: 20px;
+      right: 20px;
+      border-radius: 3px;
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+      .app-header {
+        height: 60px;
+        padding: 0 calc(var(--spacing-unit) * 2);
+      }
+      
+      .app-container {
+        padding-top: calc(var(--spacing-unit) * 8);
+      }
+      
+      .countdown-value {
+        font-size: 32px;
+      }
+      
+      .countdown-unit {
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit));
+      }
+      
+      .card-header {
+        padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2);
+      }
+      
+      .card-content {
+        padding: calc(var(--spacing-unit) * 2);
+      }
+      
+      .countdown-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .countdown-year-selector {
+        width: 100%;
+      }
+      
+      .study-progress-container {
+        padding-bottom: 90px;
+      }
+      
+      .progress-marker-label {
+        font-size: 10px;
+      }
+      
+      .progress-marker-label.semester {
+        font-size: 9px;
+        bottom: -65px;
+      }
+    }
+    
+    @media (max-width: 500px) {
+      .countdown-units {
+        flex-wrap: wrap;
+      }
+      
+      .countdown-unit {
+        min-width: 40%;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+      }
+      
+      .progress-overview {
+        flex-wrap: wrap;
+      }
+      
+      .progress-stat {
+        min-width: 50%;
+        margin-bottom: calc(var(--spacing-unit) * 2);
+      }
+    }
+  </style>
 </head>
-<body>
-    <h1 id="countdown"></h1>
-    <script>
-        function updateCountdown() {
-            const gaokaoDate = new Date(2026, 5, 7, 9, 0, 0); // 高考时间：2026年6月7日9时（北京时间，UTC+8）
-            const currentDate = new Date(); // 获取当前时间
-            const adjustedCurrentDate = new Date(currentDate.getTime());
-            const timeDifference = gaokaoDate - adjustedCurrentDate; // 计算高考与当前时间的差值
+<body class="mdui-theme-primary-indigo mdui-theme-accent-pink">
+  <!-- 固定顶部导航栏 -->
+  <header class="app-header">
+    <div class="app-title">
+      <div class="app-logo">高</div>
+      高考倒计时
+    </div>
+    <div class="header-actions">
+      <div class="theme-switcher" id="theme-toggle" mdui-tooltip="{content: '切换主题'}">
+        <i class="mdui-icon material-icons">brightness_4</i>
+      </div>
+      <button class="mdui-btn mdui-btn-icon" id="timezone-btn" mdui-tooltip="{content: '时区设置'}">
+        <i class="mdui-icon material-icons">schedule</i>
+      </button>
+      <button class="mdui-btn mdui-btn-icon" id="info-btn" mdui-tooltip="{content: '关于高考'}">
+        <i class="mdui-icon material-icons">info</i>
+      </button>
+    </div>
+  </header>
 
-            const daysRemaining = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-            const hoursRemaining = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutesRemaining = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-            const secondsRemaining = Math.floor((timeDifference % (1000 * 60)) / 1000);
-            const millisecondsRemaining = Math.floor(timeDifference % 1000);
+  <!-- 内容区域 -->
+  <div class="app-container">
+    <div class="page-container">
+      <!-- 倒计时卡片 -->
+      <div class="card fade-in">
+        <div class="bubble bubble-1"></div>
+        <div class="bubble bubble-2"></div>
+        <div class="decorative-line"></div>
+        <div class="card-header">
+          <h2 class="card-title">
+            <i class="mdui-icon material-icons card-title-icon">timer</i>
+            <span id="countdown-title">高考倒计时</span>
+          </h2>
+          <p class="card-subtitle">高考是人生的重要时刻，未来从这里起航</p>
+        </div>
+        <div class="card-content">
+          <div class="countdown-container">
+            <div class="countdown-header">
+              <div class="countdown-display" id="countdown-compact"></div>
+              <div class="year-selector">
+                <i class="mdui-icon material-icons">event</i>
+                <select class="mdui-select countdown-year-selector" id="year-select">
+                  <!-- 年份选项由JS填充 -->
+                </select>
+              </div>
+            </div>
+            
+            <div class="countdown-units">
+              <div class="countdown-unit">
+                <div class="countdown-value" id="days">--</div>
+                <div class="countdown-label">天</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="hours">--</div>
+                <div class="countdown-label">小时</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="minutes">--</div>
+                <div class="countdown-label">分钟</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="seconds">--</div>
+                <div class="countdown-label">秒</div>
+              </div>
+            </div>
 
-            document.getElementById("countdown").innerHTML = "距离高考还有 " + daysRemaining + " 天 " + hoursRemaining + " 小时 " + minutesRemaining + " 分钟 " + secondsRemaining + " 秒 " + millisecondsRemaining + " 毫秒";
+            <div class="timezone-info" id="timezone-info"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 备考进度卡片 -->
+      <div class="card inspiration-card fade-in fade-in-delay-1">
+        <div class="bubble bubble-1"></div>
+        <div class="decorative-line"></div>
+        <div class="card-header">
+          <h2 class="card-title">
+            <i class="mdui-icon material-icons card-title-icon">trending_up</i>
+            备考进度
+          </h2>
+          <p class="card-subtitle">从高一到高考，见证你的学习旅程</p>
+        </div>
+        <div class="card-content">
+          <p class="inspiration-text">
+            高考是一场马拉松，而不是短跑。合理规划三年学习路线，循序渐进，全面提升，终能厚积薄发。
+          </p>
+          
+          <!-- 当前学习阶段 -->
+          <div class="current-phase">
+            <div class="current-phase-label">当前学习阶段</div>
+            <div class="current-phase-value" id="current-phase">加载中...</div>
+          </div>
+          
+          <!-- 详细进度条 -->
+          <div class="study-progress-container">
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <!-- 进度标记点，由JS动态生成 -->
+            <div class="progress-markers" id="progress-markers"></div>
+          </div>
+          
+          <!-- 备考统计数据 -->
+          <div class="progress-overview">
+            <div class="progress-stat">
+              <div class="progress-stat-value" id="days-passed">--</div>
+              <div class="progress-stat-label">已备考天数</div>
+            </div>
+            <div class="progress-stat">
+              <div class="progress-stat-value" id="days-remaining">--</div>
+              <div class="progress-stat-label">剩余天数</div>
+            </div>
+            <div class="progress-stat">
+              <div class="progress-stat-value" id="progress-percentage">--</div>
+              <div class="progress-stat-label">完成比例</div>
+            </div>
+          </div>
+          
+          <!-- 每日鼓励 -->
+          <div class="quote-card fade-in fade-in-delay-2">
+            <p class="quote-text" id="daily-quote">
+              今天的努力，是为了让明天的自己更加出色。每一步都在为梦想铺路，坚持下去，你会遇见最好的自己。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 浮动按钮 -->
+  <div class="floating-button mdui-ripple" id="share-btn" mdui-tooltip="{content: '分享'}">
+    <i class="mdui-icon material-icons">share</i>
+  </div>
+
+  <!-- 时区设置对话框 -->
+  <div class="mdui-dialog" id="timezone-dialog">
+    <div class="mdui-dialog-title">时区设置</div>
+    <div class="mdui-dialog-content">
+      <p>当前检测到的时区: <span id="detected-timezone"></span></p>
+      <p>您可以选择不同的时区来查看倒计时:</p>
+      <div class="select-container">
+        <select class="mdui-select" id="timezone-select"></select>
+      </div>
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+      <button class="mdui-btn mdui-ripple mdui-btn-raised mdui-color-primary" id="save-timezone">保存</button>
+    </div>
+  </div>
+
+  <!-- 高考信息对话框 -->
+  <div class="mdui-dialog" id="info-dialog">
+    <div class="mdui-dialog-title">关于高考</div>
+    <div class="mdui-dialog-content">
+      <p>全国高等学校招生统一考试（简称"高考"）是中国大陆地区的大学入学考试。</p>
+      <p>中国高考通常在每年6月7日至8日举行，个别地区或有调整。</p>
+      <p>高考是中国教育制度中重要的选拔性考试，对于大多数学生来说，它决定了能否进入理想的大学。</p>
+      <p>本倒计时工具显示的是距离所选年份6月7日上午9:00（北京时间）的准确时间。</p>
+      
+      <div style="margin-top: 16px; padding: 12px; background: rgba(94, 114, 228, 0.1); border-radius: 8px;">
+        <p style="margin: 0; font-weight: 500;">小知识：高考的历史</p>
+        <p style="margin-top: 8px; font-size: 14px;">
+          中国高考制度始于1952年，经历了多次改革。曾在文化大革命期间停止，于1977年恢复，成为影响几代中国人命运的重要考试。
+        </p>
+      </div>
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple mdui-btn-raised mdui-color-primary" mdui-dialog-close>关闭</button>
+    </div>
+  </div>
+
+  <!-- 分享对话框 -->
+  <div class="mdui-dialog" id="share-dialog">
+    <div class="mdui-dialog-title">分享倒计时</div>
+    <div class="mdui-dialog-content">
+      <p>与备考伙伴分享这个倒计时，一起为高考努力！</p>
+      <div class="mdui-textfield">
+        <label class="mdui-textfield-label">分享链接</label>
+        <input class="mdui-textfield-input" type="text" id="share-url" readonly value=""/>
+      </div>
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+      <button class="mdui-btn mdui-ripple mdui-btn-raised mdui-color-primary" id="copy-url">复制链接</button>
+    </div>
+  </div>
+
+  <!-- 引入MDUI JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdui/1.0.2/js/mdui.min.js"></script>
+  <script>
+    // MDUI实例
+    const $ = mdui.$;
+    
+    // 获取对话框实例
+    const timezoneDialog = new mdui.Dialog('#timezone-dialog');
+    const infoDialog = new mdui.Dialog('#info-dialog');
+    const shareDialog = new mdui.Dialog('#share-dialog');
+    
+    // 时区相关
+    let selectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const beijingTimezone = 'Asia/Shanghai';
+    
+    // 高考相关
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth(); // 0-11
+    let defaultYear = currentYear;
+    if (currentMonth >= 5) { // 若当前月份>=6月，则默认使用下一次高考年份
+      defaultYear = currentYear + 1;
+    }
+    let selectedYear = defaultYear;
+    // 高考时间：选定年份6月7日9:00（北京时间对应 UTC+8，即 UTC 1:00）
+    let gaokaoDate = new Date(Date.UTC(selectedYear, 5, 7, 1, 0, 0));
+    
+    // 高中阶段定义（相对于考试日的天数，负数表示考试前）
+    const studyPhases = [
+      { name: "高一上学期", start: -1095, end: -913, shortName: "高一上" },
+      { name: "高一下学期", start: -913, end: -730, shortName: "高一下" },
+      { name: "高二上学期", start: -730, end: -548, shortName: "高二上" },
+      { name: "高二下学期", start: -548, end: -365, shortName: "高二下" },
+      { name: "高三上学期", start: -365, end: -183, shortName: "高三上" },
+      { name: "高三下学期 - 一轮复习", start: -183, end: -100, shortName: "一轮" },
+      { name: "高三下学期 - 二轮复习", start: -100, end: -50, shortName: "二轮" },
+      { name: "高三下学期 - 三轮复习", start: -50, end: -21, shortName: "三轮" },
+      { name: "考前冲刺", start: -21, end: 0, shortName: "冲刺" }
+    ];
+    
+    // 鼓励语句
+    const encouragingQuotes = [
+      "今天的努力，是为了让明天的自己更加出色。每一步都在为梦想铺路，坚持下去，你会遇见最好的自己。",
+      "高考只是人生的一个节点，而不是终点。尽力而为，无愧于心，未来有无限可能。",
+      "成功不是偶然，而是日积月累的坚持与努力。相信自己，你比想象中更加强大。",
+      "再小的进步也是前进，再慢的速度也比停止更快。坚持自己的节奏，稳步向前。",
+      "学习是一场与自己的比赛，而不是与他人的较量。突破自我，超越过去的自己才是真正的胜利。",
+      "困难与挑战是成长的催化剂，越是艰难的时刻，越能锻造出坚韧不拔的品格。",
+      "专注当下，不为过去的失误懊恼，不为遥远的未来焦虑，把每一天都过得充实而有意义。",
+      "知识的积累如同滴水穿石，日积月累终成大海。每一天的努力都在为你的未来增添砝码。",
+      "学会在压力中找到平衡，适当放松与调整是高效学习的必要条件。健康的身心是成功的基础。",
+      "没有人能够随随便便成功，每一份成绩的背后都是无数汗水的结晶。坚持下去，终会迎来属于自己的光芒。"
+    ];
+    
+    // 初始化年份选择器
+    function initYearSelector() {
+      const yearSelect = document.getElementById('year-select');
+      yearSelect.innerHTML = '';
+      for (let year = currentYear; year <= currentYear + 5; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year === defaultYear ? `${year}年 (下一次高考)` : `${year}年`;
+        if (year === selectedYear) option.selected = true;
+        yearSelect.appendChild(option);
+      }
+      updateCountdownTitle();
+    }
+    
+    // 更新倒计时标题
+    function updateCountdownTitle() {
+      document.getElementById('countdown-title').textContent = `${selectedYear}年高考倒计时`;
+    }
+    
+    // 初始化时区选择列表
+    function initTimezones() {
+      const timezones = [
+        'Asia/Shanghai', 'Asia/Hong_Kong', 'Asia/Taipei', 'Asia/Tokyo', 
+        'Asia/Singapore', 'Australia/Sydney', 'Europe/London', 'Europe/Paris', 
+        'America/New_York', 'America/Los_Angeles', 'America/Toronto', 'Pacific/Auckland'
+      ];
+      const select = document.getElementById('timezone-select');
+      select.innerHTML = '';
+      timezones.forEach(tz => {
+        const option = document.createElement('option');
+        option.value = tz;
+        option.textContent = tz;
+        if (tz === selectedTimezone) option.selected = true;
+        select.appendChild(option);
+      });
+      document.getElementById('detected-timezone').textContent = selectedTimezone;
+    }
+    
+    // 更新倒计时（考试倒计时，基于 gaokaoDate）
+    function updateCountdown() {
+      const currentDate = new Date();
+      const timeDifference = gaokaoDate - currentDate;
+      if (timeDifference <= 0) {
+        document.getElementById('days').textContent = "00";
+        document.getElementById('hours').textContent = "00";
+        document.getElementById('minutes').textContent = "00";
+        document.getElementById('seconds').textContent = "00";
+        document.getElementById('countdown-compact').textContent = `${selectedYear}年高考已经开始，祝考生们取得好成绩！`;
+      } else {
+        const daysRemaining = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hoursRemaining = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutesRemaining = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+        const secondsRemaining = Math.floor((timeDifference % (1000 * 60)) / 1000);
+        
+        document.getElementById('days').textContent = daysRemaining.toString().padStart(2, '0');
+        document.getElementById('hours').textContent = hoursRemaining.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutesRemaining.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = secondsRemaining.toString().padStart(2, '0');
+        
+        document.getElementById('countdown-compact').textContent =
+          `距离${selectedYear}年高考还有 ${daysRemaining} 天 ${hoursRemaining} 小时 ${minutesRemaining} 分钟 ${secondsRemaining} 秒`;
+      }
+      updateTimezoneInfo();
+      updateProgressBar();
+      updateStudyStats();
+    }
+    
+    // 更新时区信息
+    function updateTimezoneInfo() {
+      const now = new Date();
+      const userTimezoneOffset = now.getTimezoneOffset();
+      const beijingOffset = -480;
+      const hourDifference = (beijingOffset - userTimezoneOffset) / 60;
+      let info = `您当前的时区: ${selectedTimezone}`;
+      if (selectedTimezone !== beijingTimezone) {
+        info += `（比北京时间${hourDifference > 0 ? '快' : '慢'} ${Math.abs(hourDifference)} 小时）`;
+      }
+      document.getElementById('timezone-info').textContent = info;
+    }
+    
+    // 根据已备考天数（从高中开学算起）判断当前学习阶段
+    function getCurrentPhase(daysPassed) {
+      const totalDays = Math.abs(studyPhases[0].start); // 1095 天
+      if (daysPassed < 0) return { name: "尚未进入高中", shortName: "未开始" };
+      for (let phase of studyPhases) {
+        const phaseStart = totalDays + phase.start; // 例如：1095 - 1095 = 0
+        const phaseEnd = totalDays + phase.end;       // 例如：1095 - 913 = 182
+        if (daysPassed >= phaseStart && daysPassed < phaseEnd) {
+          return phase;
         }
-
-        updateCountdown(); // 首次加载时调用函数
-        setInterval(updateCountdown, 1); // 每毫秒更新一次
-    </script>
+      }
+      if (daysPassed >= totalDays) {
+        return { name: "高考已结束", shortName: "已结束" };
+      }
+      return { name: "未知阶段", shortName: "未知" };
+    }
+    
+    // 生成进度条标记（刻度基于真实时间轴：高中总时长1095天）
+    function generateProgressMarkers() {
+      const markersContainer = document.getElementById('progress-markers');
+      markersContainer.innerHTML = '';
+      const totalDays = Math.abs(studyPhases[0].start);
+      
+      // 开始点
+      const startMarker = document.createElement('div');
+      startMarker.className = 'progress-marker';
+      startMarker.style.left = '0%';
+      const startLabel = document.createElement('div');
+      startLabel.className = 'progress-marker-label';
+      startLabel.textContent = '高一入学';
+      startMarker.appendChild(startLabel);
+      markersContainer.appendChild(startMarker);
+      
+      // 阶段标记
+      studyPhases.forEach((phase, index) => {
+        const pos = ((totalDays + phase.start) / totalDays) * 100;
+        if (index > 0) {
+          const marker = document.createElement('div');
+          marker.className = 'progress-marker marker-phase';
+          marker.style.left = `${pos}%`;
+          const label = document.createElement('div');
+          label.className = 'progress-marker-label';
+          label.textContent = phase.shortName;
+          marker.appendChild(label);
+          markersContainer.appendChild(marker);
+        }
+        // 若是“上/下学期”的标记（非轮复习），添加额外的标记显示在阶段中点
+        if ((phase.name.includes("上学期") || phase.name.includes("下学期")) && !phase.name.includes("轮复习")) {
+          const semesterLabel = document.createElement('div');
+          semesterLabel.className = 'progress-marker-label semester';
+          semesterLabel.textContent = phase.name.includes("上学期") ? "上学期" : "下学期";
+          const mid = (((totalDays + phase.start) + (totalDays + phase.end)) / 2);
+          const midPos = (mid / totalDays) * 100;
+          semesterLabel.style.left = `${midPos}%`;
+          markersContainer.appendChild(semesterLabel);
+        }
+      });
+      
+      // 结束点
+      const endMarker = document.createElement('div');
+      endMarker.className = 'progress-marker';
+      endMarker.style.left = '100%';
+      const endLabel = document.createElement('div');
+      endLabel.className = 'progress-marker-label';
+      endLabel.textContent = '高考';
+      endMarker.appendChild(endLabel);
+      markersContainer.appendChild(endMarker);
+    }
+    
+    // 更新进度条（按高中全程时间比例计算）
+    function updateProgressBar() {
+      const msPerDay = 1000 * 60 * 60 * 24;
+      const totalDays = Math.abs(studyPhases[0].start); // 1095天
+      // 高中开学日 = gaokaoDate - 1095 天
+      const startDate = new Date(gaokaoDate.getTime() - totalDays * msPerDay);
+      const currentDate = new Date();
+      const rawDaysPassed = (currentDate - startDate) / msPerDay;
+      
+      let progressPercentage;
+      if (rawDaysPassed < 0) {
+        progressPercentage = 0;
+        document.getElementById('current-phase').textContent = "尚未进入高中";
+      } else if (rawDaysPassed > totalDays) {
+        progressPercentage = 100;
+        document.getElementById('current-phase').textContent = "高考已结束";
+      } else {
+        progressPercentage = (rawDaysPassed / totalDays) * 100;
+        const currentPhase = getCurrentPhase(rawDaysPassed);
+        document.getElementById('current-phase').textContent = currentPhase.name;
+      }
+      document.getElementById('progress-bar').style.width = `${progressPercentage.toFixed(1)}%`;
+      
+      if (rawDaysPassed >= 0) {
+        // 高亮最接近当前进度的阶段标记
+        const phaseMarkers = document.querySelectorAll('.progress-marker.marker-phase');
+        let closestMarker = null;
+        let closestPosition = -1;
+        phaseMarkers.forEach(marker => {
+          const pos = parseFloat(marker.style.left);
+          if (pos <= progressPercentage && pos > closestPosition) {
+            closestPosition = pos;
+            closestMarker = marker;
+          }
+        });
+        phaseMarkers.forEach(marker => {
+          marker.classList.remove('active', 'current');
+        });
+        if (closestMarker) {
+          closestMarker.classList.add('active', 'current');
+        }
+      }
+    }
+    
+    // 更新备考统计数据（基于高中全程 1095 天）
+    function updateStudyStats() {
+      const msPerDay = 1000 * 60 * 60 * 24;
+      const totalDays = Math.abs(studyPhases[0].start);
+      const startDate = new Date(gaokaoDate.getTime() - totalDays * msPerDay);
+      const currentDate = new Date();
+      let rawDaysPassed = (currentDate - startDate) / msPerDay;
+      let daysPassed, daysRemaining;
+      if (rawDaysPassed < 0) {
+        daysPassed = 0;
+        daysRemaining = totalDays;
+      } else if (rawDaysPassed > totalDays) {
+        daysPassed = totalDays;
+        daysRemaining = 0;
+      } else {
+        daysPassed = rawDaysPassed;
+        daysRemaining = totalDays - rawDaysPassed;
+      }
+      const completionPercentage = (daysPassed / totalDays) * 100;
+      document.getElementById('days-passed').textContent = Math.round(daysPassed);
+      document.getElementById('days-remaining').textContent = Math.round(daysRemaining);
+      document.getElementById('progress-percentage').textContent = `${completionPercentage.toFixed(1)}%`;
+    }
+    
+    // 更新分享链接
+    function updateShareUrl() {
+      const shareUrl = window.location.href.split('?')[0] + `?year=${selectedYear}`;
+      document.getElementById('share-url').value = shareUrl;
+    }
+    
+    // 复制分享链接
+    function copyShareUrl() {
+      const shareInput = document.getElementById('share-url');
+      shareInput.select();
+      document.execCommand('copy');
+      mdui.snackbar({
+        message: '链接已复制到剪贴板',
+        position: 'bottom',
+        timeout: 2000
+      });
+    }
+    
+    // 每日鼓励语（同一天始终一致）
+    function updateDailyQuote() {
+      const today = new Date().toISOString().slice(0, 10);
+      let seed = 0;
+      for (let i = 0; i < today.length; i++) {
+        seed += today.charCodeAt(i);
+      }
+      const index = seed % encouragingQuotes.length;
+      document.getElementById('daily-quote').textContent = encouragingQuotes[index];
+    }
+    
+    // 切换主题
+    function toggleTheme() {
+      if (document.body.classList.contains('light-theme')) {
+        document.body.classList.remove('light-theme');
+        document.body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-theme');
+        document.body.classList.add('light-theme');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+    
+    // 初始化主题：若无存储则默认为 light-theme
+    function initTheme() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.body.classList.add('dark-theme');
+      } else if (saved === 'light') {
+        document.body.classList.add('light-theme');
+      } else {
+        document.body.classList.add('light-theme');
+      }
+    }
+    
+    // 更新高考日期（年份改变时）
+    function updateGaokaoDate() {
+      gaokaoDate = new Date(Date.UTC(selectedYear, 5, 7, 1, 0, 0));
+      updateCountdown();
+      updateCountdownTitle();
+    }
+    
+    // 从 URL 获取年份参数
+    function getYearFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const yr = parseInt(params.get('year'));
+      return (yr && yr >= currentYear && yr <= currentYear + 5) ? yr : defaultYear;
+    }
+    
+    // 页面初始化
+    function init() {
+      selectedYear = getYearFromUrl();
+      initYearSelector();
+      initTimezones();
+      initTheme();
+      updateGaokaoDate();
+      updateDailyQuote();
+      updateShareUrl();
+      generateProgressMarkers();
+      
+      setInterval(updateCountdown, 1000);
+      
+      document.getElementById('timezone-btn').addEventListener('click', () => {
+        timezoneDialog.open();
+      });
+      document.getElementById('info-btn').addEventListener('click', () => {
+        infoDialog.open();
+      });
+      document.getElementById('share-btn').addEventListener('click', () => {
+        updateShareUrl();
+        shareDialog.open();
+      });
+      document.getElementById('save-timezone').addEventListener('click', () => {
+        selectedTimezone = document.getElementById('timezone-select').value;
+        updateTimezoneInfo();
+        timezoneDialog.close();
+      });
+      document.getElementById('copy-url').addEventListener('click', copyShareUrl);
+      document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+      document.getElementById('year-select').addEventListener('change', function() {
+        selectedYear = parseInt(this.value);
+        updateGaokaoDate();
+        updateShareUrl();
+      });
+    }
+    
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>
